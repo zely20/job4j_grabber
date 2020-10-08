@@ -56,7 +56,12 @@ public class AlertRabbit {
                         .withSchedule(times)
                         .build();
                 scheduler.scheduleJob(job, trigger);
+                Thread.sleep(5000);
+                scheduler.shutdown();
+                System.out.println(store);
             } catch (SQLException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         } catch (SchedulerException se) {
@@ -80,6 +85,7 @@ public class AlertRabbit {
                 System.out.println("Rabbit runs here ...");
                 List<Long> store = (List<Long>) context.getJobDetail().getJobDataMap().get("store");
                 Connection connection = (Connection) context.getJobDetail().getJobDataMap().get("connection");
+                store.add(System.currentTimeMillis());
                 try (PreparedStatement ps = connection.prepareStatement("INSERT INTO rabbit (created) VALUES (?);")) {
                     ps.setLong(1, System.currentTimeMillis());
                     ps.execute();
