@@ -1,3 +1,7 @@
     CREATE TABLE rabbit (
-        created date PRIMARY KEY
+        created date
     );
+
+drop table rabbit;
+
+select * from rabbit;

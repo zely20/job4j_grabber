@@ -3,7 +3,6 @@ package ru.job4j.quartz;
 import org.quartz.*;
 import org.quartz.impl.StdSchedulerFactory;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
@@ -36,7 +35,7 @@ public class AlertRabbit {
         return null;
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws SQLException, InterruptedException, IOException {
         try (InputStream in = AlertRabbit.class.getClassLoader().getResourceAsStream("rabbit.properties")) {
             List<Long> store = new ArrayList<>();
             Properties config = new Properties();
@@ -47,7 +46,9 @@ public class AlertRabbit {
                 JobDataMap data = new JobDataMap();
                 data.put("store", store);
                 data.put("connection", connection);
-                JobDetail job = newJob(Rabbit.class).build();
+                JobDetail job = newJob(Rabbit.class)
+                        .usingJobData(data)
+                        .build();
                 SimpleScheduleBuilder times = simpleSchedule()
                         .withIntervalInSeconds(Integer.parseInt(config.getProperty("rabbit.interval")))
                         .repeatForever();
@@ -56,42 +57,35 @@ public class AlertRabbit {
                         .withSchedule(times)
                         .build();
                 scheduler.scheduleJob(job, trigger);
-                Thread.sleep(5000);
+                Thread.sleep(10000);
                 scheduler.shutdown();
                 System.out.println(store);
+            } catch (SchedulerException se) {
+                se.printStackTrace();
+            }
+        }
+    }
+
+
+    public static class Rabbit implements Job {
+
+        public Rabbit() {
+            System.out.println(hashCode());
+
+        }
+
+        @Override
+        public void execute(JobExecutionContext context) throws JobExecutionException {
+            System.out.println("Rabbit runs here ...");
+            List<Long> store = (List<Long>) context.getJobDetail().getJobDataMap().get("store");
+            Connection connection = (Connection) context.getJobDetail().getJobDataMap().get("connection");
+            store.add(System.currentTimeMillis());
+            try (PreparedStatement ps = connection.prepareStatement("INSERT INTO rabbit (created) VALUES (to_timestamp(?));")) {
+                ps.setLong(1, System.currentTimeMillis() / 1000);
+                ps.execute();
             } catch (SQLException e) {
                 e.printStackTrace();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        } catch (SchedulerException se) {
-            se.printStackTrace();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-
-        public static class Rabbit implements Job {
-
-            public Rabbit() {
-                System.out.println(hashCode());
-
-            }
-            @Override
-            public void execute(JobExecutionContext context) throws JobExecutionException {
-                System.out.println("Rabbit runs here ...");
-                List<Long> store = (List<Long>) context.getJobDetail().getJobDataMap().get("store");
-                Connection connection = (Connection) context.getJobDetail().getJobDataMap().get("connection");
-                store.add(System.currentTimeMillis());
-                try (PreparedStatement ps = connection.prepareStatement("INSERT INTO rabbit (created) VALUES (?);")) {
-                    ps.setLong(1, System.currentTimeMillis());
-                    ps.execute();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
             }
         }
     }
+}
