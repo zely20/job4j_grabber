@@ -7,7 +7,8 @@ import org.jsoup.select.Elements;
 
 public class SqlRuParser {
     public static void main(String[] args) throws Exception {
-        Document doc;
+        Document doc = null;
+        ParseDate parseDate = new ParseDate();
         for (int i = 0; i < 6; i++) {
             if (i == 0) {
                 doc = Jsoup.connect("https://www.sql.ru/forum/job-offers").get();
@@ -21,12 +22,12 @@ public class SqlRuParser {
                 System.out.println(href.text());
             }
         }
-/*        Elements d = doc.select(".altCol");
+        Elements d = doc.select(".altCol");
         for (Element td : d) {
             Elements innerElements = td.children();
             if (innerElements.isEmpty()){
-                System.out.println(td.text());
+                System.out.println(td.text() + " = " + parseDate.parseDate(td.text()));
             }
-        }*/
+        }
     }
 }
