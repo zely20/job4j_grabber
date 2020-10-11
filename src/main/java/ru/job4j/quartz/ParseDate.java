@@ -8,25 +8,31 @@ import java.util.Locale;
 
 public class ParseDate {
 
-    public String parseDate (String dateIn) {
+    public Date parseDate(String dateIn) {
         Locale locale = new Locale("ru", "RU");
         DateFormatSymbols dfs = new DateFormatSymbols(locale);
         Date date = null;
         String[] months = {
-                 "января", "февраля", "марта", "апреля", "мая", "июня",
+                "января", "февраля", "марта", "апреля", "мая", "июня",
                 "июля", "августа", "сентября", "октября", "ноября", "декабря"};
         String[] shortMonths = {
-                 "янв", "фев", "мар", "апр", "май", "июн",
+                "янв", "фев", "мар", "апр", "май", "июн",
                 "июл", "авг", "сен", "окт", "ноя", "дек"};
         dfs.setMonths(months);
         dfs.setShortMonths(shortMonths);
         SimpleDateFormat formatterIn = new SimpleDateFormat("dd MMM yy, HH:mm", dfs);
-        SimpleDateFormat formatterOut = new SimpleDateFormat("yyyy-MM-dd", dfs);
+        //SimpleDateFormat formatterOut = new SimpleDateFormat("yyyy-MM-dd", dfs);
         try {
-            date = formatterIn.parse(dateIn);
+            if (!dateIn.contains("cегодня")) {
+                date = new Date(System.currentTimeMillis());
+            } else if (!dateIn.contains("вчера")) {
+                date = new Date(System.currentTimeMillis());
+            } else {
+                date = formatterIn.parse(dateIn);
+            }
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        return formatterOut.format(date);
+        return date;
     }
 }
