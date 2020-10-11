@@ -1,6 +1,8 @@
-    CREATE TABLE rabbit (
-        created date
-    );
+CREATE TABLE rabbit (
+    created date
+);
+
+
 
 drop table rabbit;
 
