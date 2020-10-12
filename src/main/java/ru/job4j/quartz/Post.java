@@ -68,5 +68,14 @@ public class Post {
         return Objects.hash(id, name, text, link, dateCreated);
     }
 
-
+    @Override
+    public String toString() {
+        return "Post{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", text='" + text + '\'' +
+                ", link='" + link + '\'' +
+                ", dateCreated=" + dateCreated +
+                '}';
+    }
 }

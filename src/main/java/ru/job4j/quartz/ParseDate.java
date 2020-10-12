@@ -21,12 +21,11 @@ public class ParseDate {
         dfs.setMonths(months);
         dfs.setShortMonths(shortMonths);
         SimpleDateFormat formatterIn = new SimpleDateFormat("dd MMM yy, HH:mm", dfs);
-        //SimpleDateFormat formatterOut = new SimpleDateFormat("yyyy-MM-dd", dfs);
         try {
             if (!dateIn.contains("cегодня")) {
                 date = new Date(System.currentTimeMillis());
             } else if (!dateIn.contains("вчера")) {
-                date = new Date(System.currentTimeMillis());
+                date = new Date(System.currentTimeMillis() - 86400000);
             } else {
                 date = formatterIn.parse(dateIn);
             }
