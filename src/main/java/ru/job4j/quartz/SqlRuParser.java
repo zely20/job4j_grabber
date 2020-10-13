@@ -13,10 +13,10 @@ import java.util.regex.Pattern;
 
 public class SqlRuParser implements Parse {
 
-    private String getDateFromString(String dateString) throws Exception {
-        Pattern patternOne = Pattern.compile("\\d+\\s\\D{3}\\s\\d{2},\\s\\d{2}:\\d{2}");
-        Pattern patternTwo = Pattern.compile("\\D+,\\s\\d{2}:\\d{2}");
+    Pattern patternOne = Pattern.compile("\\d+\\s\\D{3}\\s\\d{2},\\s\\d{2}:\\d{2}");
+    Pattern patternTwo = Pattern.compile("\\D+,\\s\\d{2}:\\d{2}");
 
+    private String getDateFromString(String dateString) throws Exception {
         if (dateString.contains("сегодня") || dateString.contains("вчера")) {
             Matcher matcher = patternTwo.matcher(dateString);
             if (matcher.find()) {
