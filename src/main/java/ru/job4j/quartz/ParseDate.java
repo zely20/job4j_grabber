@@ -24,8 +24,10 @@ public class ParseDate {
         try {
             if (!dateIn.contains("cегодня")) {
                 date = new Date(System.currentTimeMillis());
-            } else if (!dateIn.contains("вчера")) {
+                System.out.println("today" + date);
+            } else if (dateIn.contains("вчера")) {
                 date = new Date(System.currentTimeMillis() - 86400000);
+                System.out.println("yesterday" + date);
             } else {
                 date = formatterIn.parse(dateIn);
             }

@@ -1,5 +1,6 @@
 package ru.job4j.quartz;
 
+import java.io.InputStream;
 import java.sql.*;
 import java.util.LinkedList;
 import java.util.List;
@@ -7,14 +8,29 @@ import java.util.Properties;
 
 public class PsqlStore implements Store, AutoCloseable {
 
-    private static final String ADD_POST = "INSERT INTO posts (name, text, link, dateCreated) VALUES (?, ?, ?, ?);";
+    public static void main(String[] args) {
+
+        try (InputStream in = PsqlStore.class.getClassLoader().getResourceAsStream("rabbit.properties")){
+            Properties config = new Properties();
+            config.load(in);
+            PsqlStore psqlStore = new PsqlStore(config);
+            SqlRuParser postFromSql = new SqlRuParser();
+            for (Post post : postFromSql.list("https://www.sql.ru/forum/job-offers/")) {
+                psqlStore.save(post);
+            }
+        } catch (Exception e) {
+            throw new IllegalStateException(e);
+        }
+    }
+
+    private static final String ADD_POST = "INSERT INTO posts (name, topic_text, link, date_created) VALUES (?, ?, ?, ?);";
     private static final String FIND_ALL_POST = "SELECT * FROM posts";
     private static final String FIND_BY_ID_POST = "SELECT * FROM posts WHERE id = ?";
     private Connection cnn;
 
     public PsqlStore(Properties cfg) {
         try {
-            Class.forName(cfg.getProperty("jdbc.driver"));
+            Class.forName(cfg.getProperty("driver-class-name"));
         } catch (Exception e) {
             throw new IllegalStateException(e);
         }
@@ -31,10 +47,10 @@ public class PsqlStore implements Store, AutoCloseable {
     @Override
     public void save(Post post) {
         try (PreparedStatement pr = cnn.prepareStatement(ADD_POST)) {
-            pr.setString(2, post.getName());
-            pr.setString(3, post.getText());
-            pr.setString(4, post.getLink());
-            pr.setDate(5, (Date) post.getDateCreated());
+            pr.setString(1, post.getName());
+            pr.setString(2, post.getText());
+            pr.setString(3, post.getLink());
+            pr.setDate(4, new java.sql.Date(post.getDateCreated().getTime()));
             pr.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();

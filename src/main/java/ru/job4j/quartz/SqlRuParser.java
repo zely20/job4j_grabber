@@ -13,8 +13,8 @@ import java.util.regex.Pattern;
 
 public class SqlRuParser implements Parse {
 
-    Pattern patternOne = Pattern.compile("\\d+\\s\\D{3}\\s\\d{2},\\s\\d{2}:\\d{2}");
-    Pattern patternTwo = Pattern.compile("\\D+,\\s\\d{2}:\\d{2}");
+    private Pattern patternOne = Pattern.compile("\\d+\\s\\D{3}\\s\\d{2},\\s\\d{2}:\\d{2}");
+    private Pattern patternTwo = Pattern.compile("\\D+,\\s\\d{2}:\\d{2}");
 
     private String getDateFromString(String dateString) throws Exception {
         if (dateString.contains("сегодня") || dateString.contains("вчера")) {
@@ -61,7 +61,10 @@ public class SqlRuParser implements Parse {
         post.setLink(link);
         post.setName(elementsName.get(0).text());
         post.setText(elementsText.get(1).text());
+
         post.setDateCreated(parseDate.parseDate(stringDate));
+        System.out.println(stringDate);
+        System.out.println(parseDate.parseDate(stringDate));
         return post;
     }
 }
