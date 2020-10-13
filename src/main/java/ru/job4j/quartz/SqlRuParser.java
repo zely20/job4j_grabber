@@ -61,10 +61,7 @@ public class SqlRuParser implements Parse {
         post.setLink(link);
         post.setName(elementsName.get(0).text());
         post.setText(elementsText.get(1).text());
-
         post.setDateCreated(parseDate.parseDate(stringDate));
-        System.out.println(stringDate);
-        System.out.println(parseDate.parseDate(stringDate));
         return post;
     }
 }

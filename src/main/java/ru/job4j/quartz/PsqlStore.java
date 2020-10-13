@@ -18,6 +18,10 @@ public class PsqlStore implements Store, AutoCloseable {
             for (Post post : postFromSql.list("https://www.sql.ru/forum/job-offers/")) {
                 psqlStore.save(post);
             }
+
+            psqlStore.getAll().forEach(System.out::println);
+            System.out.println("find from id 1   " + psqlStore.findById("2"));
+
         } catch (Exception e) {
             throw new IllegalStateException(e);
         }

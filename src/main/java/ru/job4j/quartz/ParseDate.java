@@ -22,12 +22,10 @@ public class ParseDate {
         dfs.setShortMonths(shortMonths);
         SimpleDateFormat formatterIn = new SimpleDateFormat("dd MMM yy, HH:mm", dfs);
         try {
-            if (!dateIn.contains("cегодня")) {
+            if (dateIn.contains("сегодня")) {
                 date = new Date(System.currentTimeMillis());
-                System.out.println("today" + date);
             } else if (dateIn.contains("вчера")) {
                 date = new Date(System.currentTimeMillis() - 86400000);
-                System.out.println("yesterday" + date);
             } else {
                 date = formatterIn.parse(dateIn);
             }
