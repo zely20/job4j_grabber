@@ -7,8 +7,9 @@ import java.util.Properties;
 
 public class PsqlStore implements Store, AutoCloseable {
 
-    private static final String ADD_POST = "INSERT INTO items ( name) VALUES (?);";
-    private static final String FIND_ALL_POST = "SELECT * FROM items";
+    private static final String ADD_POST = "INSERT INTO posts (name, text, link, dateCreated) VALUES (?, ?, ?, ?);";
+    private static final String FIND_ALL_POST = "SELECT * FROM posts";
+    private static final String FIND_BY_ID_POST = "SELECT * FROM posts WHERE id = ?";
     private Connection cnn;
 
     public PsqlStore(Properties cfg) {
@@ -59,8 +60,22 @@ public class PsqlStore implements Store, AutoCloseable {
         return result;
     }
 
+    @Override
     public Post findById(String id) {
-        return null;
+        Post result = null;
+        try (PreparedStatement pr = cnn.prepareStatement(FIND_BY_ID_POST)) {
+            pr.setInt(1, Integer.parseInt(id));
+            ResultSet resultSet = pr.executeQuery();
+            while (resultSet.next()) {
+                result = new Post(resultSet.getInt(1), resultSet.getString(2),
+                        resultSet.getString(3), resultSet.getString(4), resultSet.getDate(5));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return result;
     }
 
     @Override
