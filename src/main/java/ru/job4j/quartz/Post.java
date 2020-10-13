@@ -11,6 +11,17 @@ public class Post {
     private String link;
     private Date dateCreated;
 
+    public Post() {
+    }
+
+    public Post(Integer id, String name, String text, String link, Date dateCreated) {
+        this.id = id;
+        this.name = name;
+        this.text = text;
+        this.link = link;
+        this.dateCreated = dateCreated;
+    }
+
     public Integer getId() {
         return id;
     }
