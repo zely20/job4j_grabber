@@ -19,7 +19,7 @@ import static org.quartz.TriggerBuilder.newTrigger;
 
 public class AlertRabbit {
 
-    public static Connection connection(Properties config) {
+   /* public static Connection connection(Properties config) {
         try {
             Class.forName(config.getProperty("driver-class-name"));
             return DriverManager.getConnection(
@@ -86,5 +86,5 @@ public class AlertRabbit {
                 e.printStackTrace();
             }
         }
-    }
+    }*/
 }

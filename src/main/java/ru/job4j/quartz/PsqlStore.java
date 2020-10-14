@@ -8,7 +8,7 @@ import java.util.Properties;
 
 public class PsqlStore implements Store, AutoCloseable {
 
-    public static void main(String[] args) {
+/*    public static void main(String[] args) {
 
         try (InputStream in = PsqlStore.class.getClassLoader().getResourceAsStream("rabbit.properties")){
             Properties config = new Properties();
@@ -25,7 +25,7 @@ public class PsqlStore implements Store, AutoCloseable {
         } catch (Exception e) {
             throw new IllegalStateException(e);
         }
-    }
+    }*/
 
     private static final String ADD_POST = "INSERT INTO posts (name, topic_text, link, date_created) VALUES (?, ?, ?, ?);";
     private static final String FIND_ALL_POST = "SELECT * FROM posts";
