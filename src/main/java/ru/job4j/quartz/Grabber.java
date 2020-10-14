@@ -14,7 +14,7 @@ public class Grabber implements Grab {
     private final Properties cfg = new Properties();
 
     public Store store() {
-        return null;
+        return new PsqlStore(cfg);
     }
 
     public Scheduler scheduler() throws SchedulerException {
@@ -24,7 +24,7 @@ public class Grabber implements Grab {
     }
 
     public void cfg() throws IOException {
-        try (InputStream in = new FileInputStream(new File("app.properties"))) {
+        try (InputStream in = new FileInputStream(new File("C:\\project\\job4j_grabber\\src\\main\\resources\\rabbit.properties"))) {
             cfg.load(in);
         }
     }
@@ -53,17 +53,22 @@ public class Grabber implements Grab {
         public void execute(JobExecutionContext context) throws JobExecutionException {
             JobDataMap map = context.getJobDetail().getJobDataMap();
             Store store = (Store) map.get("store");
-            Parse parse = (Parse) map.get("store");
-            //TODO impl logic
+            Parse parse = (Parse) map.get("parse");
+            try {
+                for (Post post : parse.list("https://www.sql.ru/forum/job-offers/")) {
+                    store.save(post);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
-
 
     public static void main(String[] args) throws Exception {
         Grabber grab = new Grabber();
         grab.cfg();
         Scheduler scheduler = grab.scheduler();
         Store store = grab.store();
-        grab.init(new SqlRuParse(), store, scheduler);
+        grab.init(new SqlRuParser(), store, scheduler);
     }
 }
