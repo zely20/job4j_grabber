@@ -6,6 +6,7 @@ import org.quartz.impl.StdSchedulerFactory;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.charset.Charset;
 import java.util.Properties;
 
 import static org.quartz.JobBuilder.newJob;
@@ -23,7 +24,7 @@ public class Grabber implements Grab {
                     try (OutputStream out = socket.getOutputStream()) {
                         out.write("HTTP/1.1 200 OK\r\n\r\n".getBytes());
                         for (Post post : store.getAll()) {
-                            out.write(post.toString().getBytes());
+                            out.write(post.toString().getBytes("UTF-8"));
                             out.write(System.lineSeparator().getBytes());
                         }
                     } catch (IOException io) {
@@ -47,7 +48,7 @@ public class Grabber implements Grab {
     }
 
     public void cfg() throws IOException {
-        try (InputStream in = new FileInputStream(new File("C:\\project\\job4j_grabber\\src\\main\\resources\\rabbit.properties"))) {
+        try (InputStream in = new FileInputStream(new File("C:\\projects\\job4j_grabber\\src\\main\\resources\\rabbit.properties"))) {
             cfg.load(in);
         }
     }
