@@ -8,25 +8,6 @@ import java.util.Properties;
 
 public class PsqlStore implements Store, AutoCloseable {
 
-/*    public static void main(String[] args) {
-
-        try (InputStream in = PsqlStore.class.getClassLoader().getResourceAsStream("rabbit.properties")){
-            Properties config = new Properties();
-            config.load(in);
-            PsqlStore psqlStore = new PsqlStore(config);
-            SqlRuParser postFromSql = new SqlRuParser();
-            for (Post post : postFromSql.list("https://www.sql.ru/forum/job-offers/")) {
-                psqlStore.save(post);
-            }
-
-            psqlStore.getAll().forEach(System.out::println);
-            System.out.println("find from id 1   " + psqlStore.findById("2"));
-
-        } catch (Exception e) {
-            throw new IllegalStateException(e);
-        }
-    }*/
-
     private static final String ADD_POST = "INSERT INTO posts (name, topic_text, link, date_created) VALUES (?, ?, ?, ?);";
     private static final String FIND_ALL_POST = "SELECT * FROM posts";
     private static final String FIND_BY_ID_POST = "SELECT * FROM posts WHERE id = ?";
